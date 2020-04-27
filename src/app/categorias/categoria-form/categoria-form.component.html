@@ -1,0 +1,35 @@
+<form class="needs-validation" novalidate [formGroup]="form" style="padding-top: 10px;">
+    <div class="form-row">
+        <div class="col-md-4 mb-3" formGroupName="classificacao">
+            <label for="classificacao">Classificação</label>
+            <input type="text" class="form-control" id="classificacao" placeholder="Classificação"
+                formControlName="codigo" [ngClass]="{ 'is-invalid': submitted && hasError('classificacao.codigo')}">
+            <div class="invalid-feedback"
+                *ngIf="hasError('classificacao.codigo') && hasError('classificacao.codigo')['required']">
+                Selecione uma Classificação
+            </div>
+        </div>
+        <div class="col-md-4 mb-3" formGroupName="subClassificacao">
+            <label for="subClassificacao">Sub-Classificação</label>
+            <input type="text" class="form-control" id="subClassificacao" placeholder="Sub-Classificação"
+                formControlName="codigo" [ngClass]="{ 'is-invalid': submitted && hasError('subClassificacao.codigo')}">
+            <div class="invalid-feedback"
+                *ngIf="hasError('classificacao.codigo') && hasError('subClassificacao.codigo')['required']">
+                Selecione uma Sub-Classificação
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="descricao">Descrição</label>
+            <input type="text" class="form-control" id="descricao" placeholder="Descrição" formControlName="descricao"
+                [ngClass]="{ 'is-invalid': submitted && hasError('descricao')}">
+            <div class="invalid-feedback"
+                *ngIf="hasError('classificacao.codigo') && hasError('classificacao.codigo')['required']">
+                Descrição é obrigatório
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-primary" (click)="onSubmit()">Salvar</button>
+        <button type="button" class="btn btn-default" (click)="onCancel()">Cancelar</button>
+    </div>
+</form>
