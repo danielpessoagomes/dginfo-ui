@@ -1,11 +1,11 @@
 import { AlertModalService } from './../../shared/alert-modal.service';
-import { AlertModalComponent } from './../../shared/alert-modal/alert-modal.component';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import {  BsModalRef } from 'ngx-bootstrap/modal';
 import { map, take, catchError, tap } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { CategoriasService } from '../categorias.service';
 import { Observable, empty, Subject } from 'rxjs';
 import { Categoria } from '../categoria';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-categorias-lista',
@@ -23,15 +23,17 @@ export class CategoriasListaComponent implements OnInit {
 
   constructor(
     private service: CategoriasService,
-    private alertService: AlertModalService
+    private alertService: AlertModalService,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.onRefresh();
   }
 
-  onEdit() {
-
+  onEdit(codigo: number) {
+    this.router.navigate(['editar', codigo], { relativeTo: this.route });
   }
 
   onDelete() {
@@ -41,12 +43,12 @@ export class CategoriasListaComponent implements OnInit {
   onRefresh() {
     this.categorias$ = this.service.list()
       .pipe(
-        tap(console.log),
+        // tap(console.log),
         map(dados => dados.data),
         take(1),
         catchError(error => {
-          console.error(error);
-          //this.error$.next(true);
+          // console.error(error);
+          // this.error$.next(true);
           this.handlerError();
           return empty();
         })
@@ -57,8 +59,7 @@ export class CategoriasListaComponent implements OnInit {
         catchError(error => empty())
       )
       .subscribe(dados => {
-        console.log(dados);
-
+        // console.log(dados);
       });
   }
 

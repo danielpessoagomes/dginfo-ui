@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "dginfo-ui"
+  "defaultProject": "dginfo-ui",
+  "cli": {
+    "analytics": false
+  }
 }
