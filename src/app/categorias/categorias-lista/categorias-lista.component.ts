@@ -1,9 +1,9 @@
 import { AlertModalService } from './../../shared/alert-modal.service';
-import {  BsModalRef } from 'ngx-bootstrap/modal';
-import { map, take, catchError, tap } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { map, take, catchError, switchMap } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CategoriasService } from '../categorias.service';
-import { Observable, empty, Subject } from 'rxjs';
+import { Observable, Subject, EMPTY } from 'rxjs';
 import { Categoria } from '../categoria';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -15,14 +15,19 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class CategoriasListaComponent implements OnInit {
 
-  bsModalRef: BsModalRef;
+  deleteModalRef: BsModalRef;
   totalRegistros = 0;
+
+  @ViewChild('deleteModal') deleteModal;
 
   categorias$: Observable<Categoria>;
   error$ = new Subject<boolean>();
 
+  categoriaSelecionado: Categoria;
+
   constructor(
     private service: CategoriasService,
+    private modalService: BsModalService,
     private alertService: AlertModalService,
     private router: Router,
     private route: ActivatedRoute
@@ -36,8 +41,24 @@ export class CategoriasListaComponent implements OnInit {
     this.router.navigate(['editar', codigo], { relativeTo: this.route });
   }
 
-  onDelete() {
+  onDelete(categoria: Categoria) {
+    this.categoriaSelecionado = categoria;
+    // this.deleteModalRef = this.modalService.show(this.deleteModal, { class: 'modal-sm' });
 
+    const result$ = this.alertService.showConfirm('Confirmação', 'Tem certeza que deseja remover esse curso?');
+    result$.asObservable()
+      .pipe(
+        take(1),
+        switchMap(result => result ? this.service.delete(categoria.codigo) : EMPTY)
+      )
+      .subscribe(
+        success => {
+          this.onRefresh();
+        },
+        error => {
+          this.alertService.showAlertDanger('Erro ao remover categorias. Tente novamente mais tarde.');
+        }
+      );
   }
 
   onRefresh() {
@@ -50,13 +71,13 @@ export class CategoriasListaComponent implements OnInit {
           // console.error(error);
           // this.error$.next(true);
           this.handlerError();
-          return empty();
+          return EMPTY;
         })
       );
 
     this.service.list()
       .pipe(
-        catchError(error => empty())
+        catchError(error => EMPTY)
       )
       .subscribe(dados => {
         // console.log(dados);
@@ -65,5 +86,23 @@ export class CategoriasListaComponent implements OnInit {
 
   handlerError() {
     this.alertService.showAlertDanger('Erro ao carregar categorias. Tente novamente mais tarde.');
+  }
+
+  onConfirmDelete() {
+    this.service.delete(this.categoriaSelecionado.codigo)
+      .subscribe(
+        success => {
+          this.onRefresh();
+          this.deleteModalRef.hide();
+        },
+        error => {
+          this.alertService.showAlertDanger('Erro ao remover categorias. Tente novamente mais tarde.');
+          this.deleteModalRef.hide();
+        }
+      );
+  }
+
+  onDeclineDelete(): void {
+    this.deleteModalRef.hide();
   }
 }

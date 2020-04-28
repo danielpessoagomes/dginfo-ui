@@ -43,6 +43,10 @@ export class CategoriasService {
     return this.http.put<Categoria>(`${this.API}/${categoria.codigo}`, categoria);
   }
 
+  delete(codigo: number) {
+    return this.http.delete<Categoria>(`${this.API}/${codigo}`).pipe(take(1));
+  }
+
   findById(codigo: number) {
     return this.http.get<Categoria>(`${this.API}/${codigo}`)
       .pipe(
