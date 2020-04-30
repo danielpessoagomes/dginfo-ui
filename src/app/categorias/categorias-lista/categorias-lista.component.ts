@@ -16,7 +16,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class CategoriasListaComponent implements OnInit {
 
   deleteModalRef: BsModalRef;
-  totalRegistros = 0;
 
   @ViewChild('deleteModal') deleteModal;
 

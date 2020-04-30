@@ -10,7 +10,7 @@ export class CrudService<T> {
   list() {
     return this.http.get<any>(this.API_URL)
       .pipe(
-        delay(2000),
+        //delay(2000),
         // tap(console.log),
         map(r => {
           const data = r.content;
