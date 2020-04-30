@@ -1,6 +1,9 @@
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
+
 
 import { CategoriasRoutingModule } from './categorias-routing.module';
 import { CategoriasListaComponent } from './categorias-lista/categorias-lista.component';
@@ -12,7 +15,9 @@ import { CategoriaFormComponent } from './categoria-form/categoria-form.componen
   imports: [
     CommonModule,
     CategoriasRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule,
+    PaginationModule
   ]
 })
 export class CategoriasModule { }

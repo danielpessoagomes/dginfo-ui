@@ -1,45 +1,77 @@
-<div class="card">
-  <div class="card-header">
-    <div class="float-left">
-      <h4>Categorias</h4>
-  </div>
-  <div class="float-right">
-      <button type="button" class="btn btn-primary" [routerLink]="['novo']">Nova categoria</button>
-      <button type="button" class="btn btn-secondary" (click)="onRefresh()" >Atualizar</button>
-  </div>
-  </div>
-  <div class="card-body">
-    <table class="table table-hover" *ngIf="categorias$ | async as categorias; else loading">
-      <thead>
-          <tr>
-            <th>#</th>
-            <th>Descricão</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let categoria of categorias">
-            <td>{{ categoria.codigo }}</td>
-            <td>{{ categoria.descricao }}</td>
-            <td>
-              <span class="float-right">
-                <button class="btn btn-outline-warning mb-1 btn-sm" (click)="onEdit(categoria.codigo)">
-                  Atualizar
-                </button>
+<div class="container">
 
-                <button class="btn btn-outline-danger mb-1 btn-sm" (click)="onDelete(categoria)">
-                  Remover
-                </button>
-              </span>
-            </td>
-          </tr>
-        </tbody>
-  </table>
+  <!-- Pesquisa -->
+  <div class="row" style="margin-bottom: 15px;">
+    <div class="col-12">
+      <form (ngSubmit)="onRefresh()">
+        <div class="form-group">
+          <label for="descricao">Descrição</label>
+          <input type="text" class="form-control" id="descricao" placeholder="Descrição" name="descricao"
+            [(ngModel)]="filter.descricao">
+        </div>
+        <button type="submit" class="btn btn-primary">Pesquisar</button>
+      </form>
+    </div>
+  </div>
 
-  <ng-template #loading>
-    <span>Carregando categorias</span>
-  </ng-template>
+  <!-- Tabela -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="float-left">
+            <h4>Categorias</h4>
+          </div>
+          <div class="float-right">
+            <button type="button" class="btn btn-primary" [routerLink]="['novo']">Nova categoria</button>
+            <button type="button" class="btn btn-secondary" (click)="onRefresh()">Atualizar</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <table class="table table-hover" *ngIf="categorias$ | async as categorias; else loading">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Descricão</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let categoria of categorias">
+                <td>{{ categoria.codigo }}</td>
+                <td>{{ categoria.descricao }}</td>
+                <td>
+                  <span class="float-right">
+                    <button class="btn btn-outline-warning mb-1 btn-sm" (click)="onEdit(categoria.codigo)">
+                      Atualizar
+                    </button>
 
+                    <button class="btn btn-outline-danger mb-1 btn-sm" (click)="onDelete(categoria)">
+                      Remover
+                    </button>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ng-template #loading>
+            <span>Carregando categorias</span>
+          </ng-template>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginação -->
+  <div class="row">
+    <div class="col">
+      <pagination [boundaryLinks]="true" [totalItems]="totalItems" [itemsPerPage]="itemsPerPage"
+        (pageChanged)="onChangedPaged($event)" [(ngModel)]="currentPage" [maxSize]="5" previousText="&lsaquo;"
+        nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" class="align-center">
+      </pagination>
+    </div>
   </div>
 </div>
 

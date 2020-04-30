@@ -10,3 +10,9 @@ export interface Categoria {
   };
   descricao: string;
 }
+
+export class CategoriaFilter {
+  pagina = 0;
+  itensPorPagina = 10;
+  descricao: string;
+}

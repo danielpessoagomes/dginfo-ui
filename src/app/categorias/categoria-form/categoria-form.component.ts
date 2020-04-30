@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CategoriasService } from '../categorias.service';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Categoria } from '../categoria';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -23,7 +23,8 @@ export class CategoriaFormComponent implements OnInit {
     private service: CategoriasService,
     private modal: AlertModalService,
     private location: Location,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -112,6 +113,7 @@ export class CategoriaFormComponent implements OnInit {
   onCancel() {
     this.submitted = false;
     this.form.reset();
+    this.router.navigate(['categorias/novo']);
   }
 
 }

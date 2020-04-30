@@ -1,8 +1,7 @@
-import { tap, delay } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, take } from 'rxjs/operators';
-import { Categoria } from './categoria';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { take } from 'rxjs/operators';
+import { Categoria, CategoriaFilter } from './categoria';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +14,19 @@ export class CategoriasService {
     private http: HttpClient
   ) { }
 
-  list() {
-    return this.http.get<any>(this.API)
-      .pipe(
-        delay(2000),
-        // tap(console.log),
-        map(r => {
-          const data = r.content;
-          const response = {
-            data,
-            total: r.totalElements
-          };
+  list(filter: CategoriaFilter) {
+    let params = new HttpParams({
+      fromObject: {
+        page: filter.pagina.toString(),
+        size: filter.itensPorPagina.toString()
+      }
+    });
 
-          return response;
-        })
-      );
+    if (filter.descricao) {
+      params = params.append('descricao', filter.descricao);
+    }
+
+    return this.http.get<any>(this.API, { params });
   }
 
   create(categoria: Categoria) {

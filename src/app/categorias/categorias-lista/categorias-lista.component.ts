@@ -1,6 +1,7 @@
+import { CategoriaFilter } from './../categoria';
 import { AlertModalService } from './../../shared/alert-modal.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
-import { map, take, catchError, switchMap } from 'rxjs/operators';
+import { BsModalRef } from 'ngx-bootstrap/modal';
+import { map, take, catchError, switchMap, tap, filter } from 'rxjs/operators';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CategoriasService } from '../categorias.service';
 import { Observable, Subject, EMPTY } from 'rxjs';
@@ -16,7 +17,11 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class CategoriasListaComponent implements OnInit {
 
   deleteModalRef: BsModalRef;
-  totalRegistros = 0;
+  totalItems = 0;
+  itemsPerPage = 0;
+  currentPage = 0;
+
+  filter = new CategoriaFilter();
 
   @ViewChild('deleteModal') deleteModal;
 
@@ -27,7 +32,6 @@ export class CategoriasListaComponent implements OnInit {
 
   constructor(
     private service: CategoriasService,
-    private modalService: BsModalService,
     private alertService: AlertModalService,
     private router: Router,
     private route: ActivatedRoute
@@ -61,11 +65,15 @@ export class CategoriasListaComponent implements OnInit {
       );
   }
 
-  onRefresh() {
-    this.categorias$ = this.service.list()
+  onRefresh(page = this.currentPage - 1) {
+    this.filter.pagina = page;
+    this.categorias$ = this.service.list(this.filter)
       .pipe(
-        // tap(console.log),
-        map(dados => dados.data),
+        tap(dados => {
+          this.totalItems = dados.totalElements;
+          this.itemsPerPage = dados.size;
+        }),
+        map(dados => dados.content),
         take(1),
         catchError(error => {
           // console.error(error);
@@ -74,14 +82,11 @@ export class CategoriasListaComponent implements OnInit {
           return EMPTY;
         })
       );
+  }
 
-    this.service.list()
-      .pipe(
-        catchError(error => EMPTY)
-      )
-      .subscribe(dados => {
-        // console.log(dados);
-      });
+  onChangedPaged(event: any): void {
+    this.currentPage = event.page;
+    this.onRefresh(event.page - 1);
   }
 
   handlerError() {
@@ -92,7 +97,7 @@ export class CategoriasListaComponent implements OnInit {
     this.service.delete(this.categoriaSelecionado.codigo)
       .subscribe(
         success => {
-          this.onRefresh();
+          this.onRefresh(this.currentPage);
           this.deleteModalRef.hide();
         },
         error => {
