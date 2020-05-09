@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'categorias'
+    redirectTo: 'bancos/novo'
   },
   {
     path: 'categorias',

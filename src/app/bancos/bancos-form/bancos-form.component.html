@@ -1,0 +1,19 @@
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="nome" class="form-control" id="nome" formControlName="nome">
+    </div>
+    <div class="form-group">
+        <label for="saldo">Saldo (R$)</label>
+        <input type="saldo" class="form-control" id="saldo" formControlName="saldo">
+    </div>
+    <div class="form-group">
+        <label for="dataSaldo">Data Saldo</label>
+        <input type="dataSaldo" class="form-control" id="dataSaldo" formControlName="dataSaldo">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<pre>
+    {{ formulario.value | json }}
+</pre>
